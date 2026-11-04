@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Two User Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 20px;
+        }
+        #chat-box {
+            border: 1px solid #ccc;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            background: white;
+        }
+        #message {
+            width: 75%;
+            padding: 10px;
+        }
+        #send {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>FastAPI WebSocket Chat</h2>
+    <div id="chat-box"></div>
+    <input type="text" id="message" placeholder="Type message..." />
+    <button id="send">Send</button>
+    <script>
+    const ws = new WebSocket(`ws://${location.host}/ws`);
+
+    const chatBox = document.getElementById("chat-box");
+    const input = document.getElementById("message");
+    const send = document.getElementById("send");
+
+    ws.onmessage = (event) => {
+        const msg = document.createElement("div");
+
+        msg.textContent = event.data;
+
+        chatBox.appendChild(msg);
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+    };
+
+    send.onclick = () => {
+        if (input.value.trim()) {
+            ws.send(input.value);
+            input.value = "";
+        }
+    };
+
+    input.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            send.click();
+        }
+    });
+</script>
+
+</body>
+</html>
